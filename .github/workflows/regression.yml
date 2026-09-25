@@ -1,0 +1,24 @@
+name: regression
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  router-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # No sibling clone in CI: the pinned-receipt cross-check runs through
+      # the fallback that fetches receipt.json at commit 19b35f6.
+      - name: Router regression suite
+        run: node --test
+      # Proves the cross-check can fail: corrupted label and unavailable
+      # pinned sources must each make the suite fail, never pass or skip.
+      - name: Mutation checks
+        run: node tests/mutation-check.js

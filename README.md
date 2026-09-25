@@ -49,3 +49,14 @@ A cross-check loads `receipt.json` **at commit `19b35f6`** (sibling clone via
 `git show <pin>:receipt.json`, falling back to a fetch at that exact commit)
 and asserts the router's registered labels equal the file's `cells` field by
 field. If the file cannot be read, the test **fails** — it never skips.
+
+Mutation checks prove the cross-check can actually fail (corrupted label,
+unavailable pinned sources), running in throwaway scratch copies:
+
+```bash
+node tests/mutation-check.js
+```
+
+CI (`.github/workflows/regression.yml`) runs both on every push and PR to
+`main`. CI has no sibling clone, so the cross-check there exercises the
+pinned-fetch fallback.
