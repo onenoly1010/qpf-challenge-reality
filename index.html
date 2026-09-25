@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QPF — Challenge Reality</title>
+  <style>
+    :root {
+      --paper: #f2eee4;
+      --ink: #171512;
+      --rule: #c9c2b4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    main { max-width: 40rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    h1 { font-size: 1.35rem; font-weight: 600; letter-spacing: 0.04em; margin: 0 0 0.25rem; }
+    .sub { color: #4a453e; font-size: 0.95rem; margin-bottom: 2rem; }
+    h2 { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; margin: 2rem 0 0.75rem; }
+    .doors { display: grid; gap: 0.75rem; }
+    a.door, .card {
+      display: block;
+      border: 1px solid var(--ink);
+      padding: 1rem 1.1rem;
+      text-decoration: none;
+      color: inherit;
+      background: #fffdf8;
+    }
+    a.door:hover { background: #ebe6da; }
+    .door b { display: block; font-size: 1.05rem; margin-bottom: 0.2rem; }
+    .door span, .card p { font-size: 0.92rem; color: #3f3a34; }
+    pre {
+      background: #171512;
+      color: #f2eee4;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.8rem;
+    }
+    ul { padding-left: 1.2rem; }
+    footer { margin-top: 2.5rem; font-size: 0.85rem; color: #4a453e; border-top: 1px solid var(--rule); padding-top: 1rem; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>QPF — Challenge Reality</h1>
+  <p class="sub">Verification work is the product. Agreement is optional.</p>
+
+  <h2>What do you want to do?</h2>
+  <div class="doors">
+    <a class="door" href="#verify">
+      <b>Verify something</b>
+      <span>Read → run → check → submit a receipt</span>
+    </a>
+    <a class="door" href="#submit">
+      <b>Submit an idea</b>
+      <span>Claim, construction, prediction, evidence, falsifier</span>
+    </a>
+    <a class="door" href="#challenge">
+      <b>Challenge a claim</b>
+      <span>Name the cell that must move</span>
+    </a>
+    <a class="door" href="#receipts">
+      <b>See the receipts</b>
+      <span>Public status lines only</span>
+    </a>
+  </div>
+
+  <h2 id="verify">First challenge</h2>
+  <div class="card">
+    <p><b>Not asked:</b> Do you believe we live inside a black hole?</p>
+    <p><b>Asked:</b> Can you reproduce this receipt?</p>
+    <p>Package: <a href="https://github.com/onenoly1010/qpf-bhu-anomaly-receipt">onenoly1010/qpf-bhu-anomaly-receipt</a><br>
+    Pin: <code>19b35f6ae2691c6ea2c2007fd1dbd0b3a6b62dee</code></p>
+  </div>
+  <pre>git clone https://github.com/onenoly1010/qpf-bhu-anomaly-receipt
+cd qpf-bhu-anomaly-receipt
+python3 reproduce.py</pre>
+  <p>Expected status:</p>
+  <ul>
+    <li>BHU = NOT ESTABLISHED</li>
+    <li>θ_cut = ACCOMMODATION</li>
+    <li>C₂ = UNDERDETERMINED</li>
+    <li>S1–S7 = LOCKED</li>
+  </ul>
+  <p>If you get the same labels, you have a reproduction receipt. If you do not, name the assumption you reject.</p>
+
+  <h2 id="submit">Submit</h2>
+  <div class="card">
+    <p>CLAIM — what are you saying?<br>
+    CONSTRUCTION — what produces it?<br>
+    PREDICTION — what would we observe?<br>
+    EVIDENCE — what can test it?<br>
+    CHALLENGE — what would falsify it?</p>
+    <p>Submission intake is not live. Use a GitHub issue on the receipt repo for now.</p>
+  </div>
+
+  <h2 id="challenge">Challenge</h2>
+  <div class="card">
+    <p>A valid challenge replaces one frozen cell with a hashed alternative.
+    Importing LQC, DSI, EPRL, or an entropy-locked γ into the BHU row is not valid.</p>
+  </div>
+
+  <h2 id="receipts">Receipts</h2>
+  <div class="card">
+    <p>BHU anomaly v1 — NOT ESTABLISHED — public pin only.
+    Independent stranger reproduction: not claimed.</p>
+  </div>
+
+  <footer>
+    QPF rewards the quality of the verification work, not which side wins.
+    Economic rewards are a later layer.
+  </footer>
+</main>
+</body>
+</html>
