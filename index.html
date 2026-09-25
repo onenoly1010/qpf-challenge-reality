@@ -37,26 +37,11 @@ a{color:inherit}
 <p><a href="https://github.com/onenoly1010/qpf-bhu-anomaly-receipt">BHU technical receipt</a> — pin 19b35f6ae2691c6ea2c2007fd1dbd0b3a6b62dee. Expected: NOT ESTABLISHED.</p>
 <footer>You are looking at the object before any test. This demo does not verify the claim.</footer>
 </main>
+<script src="router.js"></script>
 <script>
 (function(){
-var PIN="19b35f6ae2691c6ea2c2007fd1dbd0b3a6b62dee";
 var q=document.getElementById("q"),out=document.getElementById("out"),plain=document.getElementById("plain");
-function formalize(raw){
- raw=(raw||"").trim(); var t=raw.toLowerCase();
- var bhu=/black.?hole|bhu|gazta/.test(t), cmb=/cmb|cutoff|quadrupole/.test(t), spec=/spectrum|primordial/.test(t);
- var bridge=/bridge/.test(t), supp=/supplement|vitamin|pill/.test(t), proof=/proof|theorem|mathematical/.test(t);
- var o={claim:raw,route:"CHALLENGE",gaps:{},nearby:null,scope_locked:false}, say="";
- if(bridge){o.gaps.which_bridge="UNKNOWN";o.gaps.when="UNKNOWN";o.route="UNKNOWN";say="This can be checked, but you have not said which bridge or when. Next: name the place and time.";}
- else if(supp){o.gaps.product="UNKNOWN";o.gaps.claimed_effect="UNKNOWN";o.route="UNKNOWN";say="This can be checked only after the product and the claimed effect are named. A label is not a test.";}
- else if(proof){o.gaps.theorem="UNKNOWN";o.gaps.proof_object="UNKNOWN";o.route="UNKNOWN";say="A proof exists is not the same object as a specific proof of a named theorem. Name both.";}
- else if(bhu&&spec){o.gaps.P_R="ABSENT";o.route="UNDERDETERMINED";o.nearby=PIN;say="The registered BHU construction does not supply this object, so this test cannot run. That does not mean the whole idea is false.";}
- else if(bhu&&cmb){o.gaps.version="UNKNOWN";o.route="CANDIDATE";o.nearby=PIN;say="There is a related receipt for one construction. Your question does not lock that construction. Related is not the same claim.";}
- else if(bhu){o.gaps.version="UNKNOWN";o.route="CANDIDATE";o.nearby=PIN;say="There is a related receipt. It is not automatically this question.";}
- else {o.gaps.scope="UNKNOWN";o.route="DRAFT";say="Not enough is specified to test. You can still put it on the table as a draft.";}
- o.provenance={source:"demo",construction_hash:o.nearby,scope_locked:false};
- return {o:o,say:say};
-}
-function run(){var r=formalize(q.value);plain.textContent=r.say;out.textContent=JSON.stringify(r.o,null,2);}
+function run(){var r=QPFRouter.formalize(q.value);plain.textContent=r.say;out.textContent=JSON.stringify(r.o,null,2);}
 document.getElementById("go").onclick=run;
 document.querySelectorAll("button.ex").forEach(function(b){b.onclick=function(){q.value=b.getAttribute("data-q");run();};});
 run();
