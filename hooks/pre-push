@@ -1,0 +1,20 @@
+#!/bin/sh
+# QPF pre-push gate — runs before every push; non-zero exit blocks the push.
+#
+# One-time enable per clone (hooks are not versioned by git):
+#   git config core.hooksPath hooks
+#
+# Layers gated:
+#   1) router regression suite (node --test) — includes the pinned-receipt
+#      cross-check (sibling git blob, or fetch at commit 19b35f6)
+#   2) mutation checks — proves the cross-check can fail, never skips
+set -e
+cd "$(git rev-parse --show-toplevel)"
+
+echo "pre-push: router regression suite (node --test)"
+node --test
+
+echo "pre-push: mutation checks"
+node tests/mutation-check.js
+
+echo "pre-push: all green — push allowed"

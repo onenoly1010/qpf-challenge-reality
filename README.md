@@ -59,4 +59,16 @@ node tests/mutation-check.js
 
 CI (`.github/workflows/regression.yml`) runs both on every push and PR to
 `main`. CI has no sibling clone, so the cross-check there exercises the
-pinned-fetch fallback.
+pinned-fetch fallback. CI is currently dormant (GitHub billing lock) — the
+workflow is wired up and starts working once the account can run jobs.
+
+## Pre-push hook
+
+The same gates run locally before every push, no CI minutes required.
+One-time enable per clone:
+
+```bash
+git config core.hooksPath hooks
+```
+
+A failing suite or failing mutation check blocks the push.
