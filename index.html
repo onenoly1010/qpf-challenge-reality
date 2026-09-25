@@ -9,67 +9,57 @@
 body{margin:0;font-family:Georgia,serif;background:var(--paper);color:var(--ink);line-height:1.45}
 main{max-width:40rem;margin:0 auto;padding:2.5rem 1.25rem 4rem}
 h1{font-size:1.35rem;margin:0 0 .25rem}
-.sub{color:#4a453e;margin-bottom:1rem}
+.sub{color:#4a453e;margin:0 0 1.5rem}
 h2{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;margin:2rem 0 .75rem}
-.doors{display:grid;gap:.75rem}
-a.door,.card{display:block;border:1px solid var(--ink);padding:1rem 1.1rem;text-decoration:none;color:inherit;background:#fffdf8}
-pre{background:#171512;color:#f2eee4;padding:1rem;overflow-x:auto;font-size:.78rem;white-space:pre-wrap}
-button,textarea{font:inherit}button{padding:.4rem .8rem;border:1px solid #171512;background:#fffdf8;cursor:pointer}
-textarea{width:100%;margin:.5rem 0;padding:.5rem}
+.card,button.ex{display:block;width:100%;text-align:left;border:1px solid var(--ink);padding:.85rem 1rem;background:#fffdf8;color:inherit;font:inherit;cursor:pointer;margin:0 0 .5rem}
+button.primary{width:auto;font:inherit;padding:.4rem .8rem;border:1px solid var(--ink);background:#fffdf8;cursor:pointer}
+textarea{width:100%;margin:.5rem 0;padding:.5rem;font:inherit}
+pre{background:#171512;color:#f2eee4;padding:1rem;font-size:.78rem;white-space:pre-wrap}
+.plain{border:1px solid var(--ink);padding:1rem;background:#fffdf8;margin:.75rem 0}
 footer{margin-top:2.5rem;font-size:.85rem;color:#4a453e;border-top:1px solid var(--rule);padding-top:1rem}
+a{color:inherit}
 </style>
 </head>
 <body>
 <main>
 <h1>QPF — Challenge Reality</h1>
 <p class="sub">What do you want to know is real?<br>Don’t trust us. Check it.</p>
-<h2>Doors</h2>
-<div class="doors">
-<a class="door" href="#verify"><b>Verify</b></a>
-<a class="door" href="#demo"><b>Formalize a claim</b></a>
-<a class="door" href="https://github.com/onenoly1010/qpf-bhu-anomaly-receipt"><b>Receipt</b></a>
-</div>
-<h2 id="verify">Technical receipt</h2>
-<div class="card">
-<p>Can you reproduce this receipt? Not: do you believe BHU?</p>
-<p><a href="https://github.com/onenoly1010/qpf-bhu-anomaly-receipt">qpf-bhu-anomaly-receipt</a><br>Pin <code>19b35f6ae2691c6ea2c2007fd1dbd0b3a6b62dee</code></p>
-</div>
-<pre>git clone https://github.com/onenoly1010/qpf-bhu-anomaly-receipt
-cd qpf-bhu-anomaly-receipt
-python3 reproduce.py</pre>
-<p>Expected: NOT ESTABLISHED</p>
-<h2 id="demo">Formalize this claim</h2>
-<div class="card">
-<p>Prototype only. Shows the object before any test. Not live verification.</p>
-<textarea id="q" rows="3">Does the black-hole universe explain the CMB cutoff?</textarea>
-<button type="button" id="go">Formalize this claim</button>
+<h2>Try a claim</h2>
+<button class="ex" data-q="Is this bridge open?">Is this bridge open?</button>
+<button class="ex" data-q="Does this supplement actually do what it claims?">Does this supplement actually do what it claims?</button>
+<button class="ex" data-q="Did this mathematical proof establish the theorem?">Did this mathematical proof establish the theorem?</button>
+<button class="ex" data-q="Does the black-hole universe explain the CMB cutoff?">Does the black-hole universe explain the CMB cutoff?</button>
+<button class="ex" data-q="Does the black-hole universe predict the primordial spectrum?">Does the black-hole universe predict the primordial spectrum?</button>
+<textarea id="q" rows="3">Is this bridge open?</textarea>
+<button class="primary" type="button" id="go">Formalize this claim</button>
+<div class="plain" id="plain"></div>
 <pre id="out"></pre>
-</div>
-<footer>Interpretation can be flexible. The tested object cannot be. Router not live. BHU NOT ESTABLISHED.</footer>
+<p><a href="https://github.com/onenoly1010/qpf-bhu-anomaly-receipt">BHU technical receipt</a> — pin 19b35f6ae2691c6ea2c2007fd1dbd0b3a6b62dee. Expected: NOT ESTABLISHED.</p>
+<footer>You are looking at the object before any test. This demo does not verify the claim.</footer>
 </main>
 <script>
 (function(){
 var PIN="19b35f6ae2691c6ea2c2007fd1dbd0b3a6b62dee";
-var q=document.getElementById("q"),out=document.getElementById("out");
+var q=document.getElementById("q"),out=document.getElementById("out"),plain=document.getElementById("plain");
 function formalize(raw){
- raw=(raw||"").trim();
- var t=raw.toLowerCase();
- var bhu=/black.?hole|bhu|gazta/.test(t);
- var cmb=/cmb|cutoff|quadrupole|correlation/.test(t);
- var spec=/spectrum|n_s|scalar perturbation|p_r|primordial/.test(t);
- var o={claim:raw,stage:["RETRIEVE_FRAME","CANONICALIZE","CLASSIFY_GAPS","PROVENANCE","ROUTE"],
-  frame:{family:bhu?"BHU":"UNKNOWN",construction_hash:null,scope_locked:false},
-  fields:{version:"UNKNOWN",parameters:"UNKNOWN",observation:cmb?"CMB large-angle / cutoff":spec?"primordial spectrum":"UNKNOWN"},
-  gaps:{},nearby:null,route:"CHALLENGE",note:"No value invented. Keyword demo."};
- if(bhu&&spec){o.gaps.P_R="ABSENT";o.gaps.S1_S7="LOCKED";o.nearby={pin:PIN,relation:"same family, different test"};o.route="UNDERDETERMINED / cannot execute this test";o.note="ABSENT is not unfalsifiable. This test cannot run.";}
- else if(bhu&&cmb){o.gaps.version="UNKNOWN";o.nearby={pin:PIN,cell:"theta_cut",relation:"scope mismatch"};o.route="CANDIDATE";o.note="We found something related; it isn\u2019t necessarily the same claim.";}
- else if(bhu){o.gaps.version="UNKNOWN";o.nearby={pin:PIN,relation:"family only"};o.route="CANDIDATE";o.note="We found something related; it isn\u2019t necessarily the same claim.";}
- else {o.gaps.scope="UNKNOWN";o.route="DRAFT / CHALLENGE";}
- o.provenance={source:"qpf-challenge-reality demo",construction_hash:o.nearby?o.nearby.pin:null,retrieved_at:"client-local",scope_locked:false};
- return JSON.stringify(o,null,2);
+ raw=(raw||"").trim(); var t=raw.toLowerCase();
+ var bhu=/black.?hole|bhu|gazta/.test(t), cmb=/cmb|cutoff|quadrupole/.test(t), spec=/spectrum|primordial/.test(t);
+ var bridge=/bridge/.test(t), supp=/supplement|vitamin|pill/.test(t), proof=/proof|theorem|mathematical/.test(t);
+ var o={claim:raw,route:"CHALLENGE",gaps:{},nearby:null,scope_locked:false}, say="";
+ if(bridge){o.gaps.which_bridge="UNKNOWN";o.gaps.when="UNKNOWN";o.route="UNKNOWN";say="This can be checked, but you have not said which bridge or when. Next: name the place and time.";}
+ else if(supp){o.gaps.product="UNKNOWN";o.gaps.claimed_effect="UNKNOWN";o.route="UNKNOWN";say="This can be checked only after the product and the claimed effect are named. A label is not a test.";}
+ else if(proof){o.gaps.theorem="UNKNOWN";o.gaps.proof_object="UNKNOWN";o.route="UNKNOWN";say="A proof exists is not the same object as a specific proof of a named theorem. Name both.";}
+ else if(bhu&&spec){o.gaps.P_R="ABSENT";o.route="UNDERDETERMINED";o.nearby=PIN;say="The registered BHU construction does not supply this object, so this test cannot run. That does not mean the whole idea is false.";}
+ else if(bhu&&cmb){o.gaps.version="UNKNOWN";o.route="CANDIDATE";o.nearby=PIN;say="There is a related receipt for one construction. Your question does not lock that construction. Related is not the same claim.";}
+ else if(bhu){o.gaps.version="UNKNOWN";o.route="CANDIDATE";o.nearby=PIN;say="There is a related receipt. It is not automatically this question.";}
+ else {o.gaps.scope="UNKNOWN";o.route="DRAFT";say="Not enough is specified to test. You can still put it on the table as a draft.";}
+ o.provenance={source:"demo",construction_hash:o.nearby,scope_locked:false};
+ return {o:o,say:say};
 }
-function run(){out.textContent=formalize(q.value);}
-document.getElementById("go").addEventListener("click",run);run();
+function run(){var r=formalize(q.value);plain.textContent=r.say;out.textContent=JSON.stringify(r.o,null,2);}
+document.getElementById("go").onclick=run;
+document.querySelectorAll("button.ex").forEach(function(b){b.onclick=function(){q.value=b.getAttribute("data-q");run();};});
+run();
 })();
 </script>
 </body></html>
