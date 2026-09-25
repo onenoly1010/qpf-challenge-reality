@@ -188,6 +188,109 @@ test("INVARIANT: UNKNOWN routes to PROMPT_REFINEMENT and is never filled in", ()
   assert.equal(o.receipt, null);
 });
 
+/* --------------- PINNED-RECEIPT CROSS-CHECK (anti-self-confirmation) ---------------
+ *
+ * TEST 2 above compares the router against its own registered_status copy.
+ * This test binds that copy to the actual pinned object: it loads receipt.json
+ * AT COMMIT 19b35f6 (never the working tree, never a branch tip) and asserts
+ * the router's labels equal the file's cells field by field.
+ *
+ * Source order:
+ *   1) sibling clone, read via `git show <pin>:receipt.json` (offline-safe)
+ *   2) raw fetch of the file at that exact commit
+ * If neither yields the file, THIS TEST FAILS. It never skips.
+ */
+
+const { execFileSync } = require("node:child_process");
+const path = require("node:path");
+
+const SIBLING_DIR = path.resolve(__dirname, "..", "..", "qpf-bhu-anomaly-receipt");
+const RAW_PINNED_URL =
+  "https://raw.githubusercontent.com/onenoly1010/qpf-bhu-anomaly-receipt/" +
+  PIN +
+  "/receipt.json";
+
+async function loadPinnedReceipt() {
+  const attempts = [];
+  try {
+    const blob = execFileSync(
+      "git",
+      ["-C", SIBLING_DIR, "show", PIN + ":receipt.json"],
+      { encoding: "utf8", maxBuffer: 1024 * 1024 }
+    );
+    return { source: "git:" + SIBLING_DIR + "@" + PIN, receipt: JSON.parse(blob) };
+  } catch (e) {
+    attempts.push("sibling `git show " + PIN + ":receipt.json` -> " + e.message);
+  }
+  try {
+    const res = await fetch(RAW_PINNED_URL);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return { source: RAW_PINNED_URL, receipt: await res.json() };
+  } catch (e) {
+    attempts.push(RAW_PINNED_URL + " -> " + e.message);
+  }
+  throw new Error(
+    "pinned receipt.json unavailable at commit " + PIN +
+    " — failing rather than skipping:\n  " + attempts.join("\n  ")
+  );
+}
+
+test("CROSS-CHECK: router's registered labels equal pinned receipt.json cells, field by field", async () => {
+  const { source, receipt } = await loadPinnedReceipt();
+
+  // --- Identity of the pinned object ---
+  assert.equal(receipt.package, "qpf-bhu-anomaly-receipt");
+  assert.ok(
+    router.REPO.endsWith(receipt.package),
+    `router repository ${router.REPO} does not name the pinned package`
+  );
+  assert.equal(
+    receipt.which_version,
+    router.REGISTERED.construction,
+    "construction identity drift between router registry and pinned receipt"
+  );
+
+  // --- Field-by-field label comparison (router copy vs. file cells) ---
+  const cells = receipt.cells;
+  const status = router.REGISTERED.registered_status;
+  const mapping = {
+    // router label            -> receipt cell        , normalizer
+    HYPOTHESIS_STATUS: ["overall", (s) => String(s).replace(/_/g, " ")],
+    theta_cut: ["theta_cut", null],
+    C2: ["C2", null],
+    S1_S7: ["S1_S7", null]
+  };
+  for (const key of Object.keys(mapping)) {
+    const [cell, normalize] = mapping[key];
+    assert.ok(cell in cells, `receipt.json cells missing ${cell}`);
+    const expected = normalize ? normalize(cells[cell]) : cells[cell];
+    assert.equal(
+      status[key],
+      expected,
+      `router registered_status.${key} != receipt cells.${cell} (${source})`
+    );
+  }
+  // Every router status key must map to a real cell — no invented labels.
+  assert.deepEqual(
+    Object.keys(status).sort(),
+    ["C2", "HYPOTHESIS_STATUS", "S1_S7", "theta_cut"]
+  );
+  // The overall cell must never be upgraded: NOT_ESTABLISHED stays as filed.
+  assert.equal(cells.overall, "NOT_ESTABLISHED");
+
+  // --- The RECEIPT-route block must also agree with the file ---
+  const o = formalize(CLAIM_EXACT).o;
+  assert.equal(o.route, "RECEIPT");
+  assert.equal(o.receipt.commit, PIN);
+  assert.equal(o.receipt.reproduces, receipt.reproduces);
+  assert.deepEqual(o.receipt.does_not_recompute, receipt.does_not_recompute);
+  assert.deepEqual(
+    o.receipt.registered_status,
+    status,
+    "RECEIPT-route labels drifted from the registry"
+  );
+});
+
 test("INVARIANT: pipeline stages are declared in fixed order", () => {
   for (const c of [CLAIM_BROAD_CMB, CLAIM_EXACT, "Is this bridge open?"]) {
     const o = run(c);

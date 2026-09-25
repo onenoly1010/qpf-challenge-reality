@@ -44,3 +44,8 @@ RECEIPT; modified parameter → CANDIDATE; missing object → ABSENT/CHALLENGE;
 conflicting constructions → CONFLICTING with `branch_A` and `branch_B`
 preserved; plus invariants (no receipt without exact match, no fabricated
 execution, UNKNOWN never filled, fixed stage order).
+
+A cross-check loads `receipt.json` **at commit `19b35f6`** (sibling clone via
+`git show <pin>:receipt.json`, falling back to a fetch at that exact commit)
+and asserts the router's registered labels equal the file's `cells` field by
+field. If the file cannot be read, the test **fails** — it never skips.
